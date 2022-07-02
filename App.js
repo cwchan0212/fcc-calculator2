@@ -2,16 +2,16 @@
 import './App.css';
 import React from 'react';
 
-const nums = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"];
-const numText = ["seven", "eight", "nine", "four", "five", "six", "one", "two", "three", "zero"];
-const ops = ["/", "x", "‑", "+", "="];
-const opsText = ["divide", "multiply", "subtract", "add", "equals"];
-
 function App() {
+
+    const nums = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"];
+    const numText = ["seven", "eight", "nine", "four", "five", "six", "one", "two", "three", "zero"];
+    const ops = ["/", "x", "‑", "+", "="];
+    const opsText = ["divide", "multiply", "subtract", "add", "equals"];
 
     const [expression, setExpression] = React.useState("");
     const [answer, setAnswer] = React.useState(0);
- 
+
     const display = (symbol) => {
 
         if (symbol === "x")
@@ -21,87 +21,75 @@ function App() {
 
         let p = expression.replace(/[/*\-+]/gm, " ").split(" ");
         let last = p[p.length - 1]
-        
-        console.log("array: ", p, p.length, "]")
-        console.log("last:", last, "symbol", symbol, " -- expression", expression)
-
-//        console.log("check: ", ce(lastInput, symbol))
 
         if (expression === "") {
-            console.log(1)
-            // + check digit or operator
             setExpression(symbol);
             setAnswer(symbol);
-        } else {       
+        } else {
             if (!Number.isNaN(Number(last + symbol))) {
-                console.log(2)
                 if (symbol === ".") {
-                    console.log(2.1)
-                    setExpression(expression.substring(0, expression.length-last.length) + last + symbol);
+                    setExpression(expression.substring(0, expression.length - last.length) + last + symbol);
                     setAnswer(last + symbol);
                 } else {
-                    //let lastE = expression.substring(expression.length-1, expression.length);
-                    console.log("2.2/2.3", symbol);
                     if ((/[/*\-+]/).test(symbol)) {
-                        console.log(2.2)
-                        setExpression(expression.substring(0, expression.length-last.length) + Number(last + symbol));
+                        setExpression(expression.substring(0, expression.length - last.length) + Number(last + symbol));
                         setAnswer(Number(last + symbol));
                     } else {
-                        console.log(2.3)
                         if ((/[0]/).test(symbol)) {
-                            
                             if (last === "0") {
-                                console.log("2.3.1")
                                 return;
                             } else {
-                                console.log("2.3.2")
-                                setExpression(expression.substring(0, expression.length-last.length) + last + symbol);
-                                setAnswer(last + symbol);    
+                                setExpression(expression.substring(0, expression.length - last.length) + last + symbol);
+                                setAnswer(last + symbol);
                             }
                         } else {
-                            console.log("2.3.3")
-                            setExpression(expression.substring(0, expression.length-last.length) + Number(last + symbol));
+                            setExpression(expression.substring(0, expression.length - last.length) + Number(last + symbol));
                             setAnswer(Number(last + symbol));
                         }
                     }
                 }
             } else {
-
-                let le = expression.substring(expression.length-1, expression.length);
-                console.log("3.0", le, last, symbol);
-                
+                let c = expression.indexOf(last);
+                let tail = expression.substring(c + last.length, expression.length).replace(/\d+\.?\d*/gm, "");
+                let eq = expression.split("=")[1] === undefined ? "" : expression.split("=")[1];
                 if (!last.includes(".")) {
-                    console.log(3)
-                    setExpression(expression.substring(0, expression.length-last.length) + last + symbol);
+                    setExpression(expression.substring(0, expression.length - last.length) + last + symbol);
                     setAnswer(last + symbol);
-                } 
-
-                if ((/[/*\-+]/).test(symbol)) {
-                    console.log(4)
-                    setExpression(expression.substring(0, expression.length-last.length) + last + symbol);
-                    setAnswer(symbol);
                 }
 
-
-                // if ((/[/*\-+]/).test(symbol)) {
-                //     console.log(4)
-                //     setExpression(expression.substring(0, expression.length-last.length) + last + symbol);
-                //     setAnswer(symbol);
-                // }
+                if ((/[/*\-+]/).test(symbol)) {
+                    if ((/[/*+]/).test(symbol)) {
+                        setExpression(expression.substring(0, expression.length - tail.length) + symbol);
+                        setAnswer(symbol);
+                    } else {
+                        setExpression(expression.substring(0, expression.length - last.length) + last + symbol);
+                        setAnswer(symbol);
+                    }
+                    if (eq !== "") {
+                        setExpression(eq + symbol);
+                        setAnswer(symbol);
+                    }
+                }
             }
         }
     };
 
     const calculate = () => {
-        let e = expression;
-        e = e.replace("x", "*")
-        setAnswer(eval(e));
-        setExpression(prev => prev + "=")
+        let ex = expression;
+        let res = eval(ex);
+        setAnswer(res);
+        setExpression(prev => prev + "=" + res)
     };
 
-    const clear = () => {
+    const allClear = () => {
         setExpression("");
         setAnswer(0);
+    }
+
+    const clear = () => {
+       if (expression !== "") {
+         setExpression(expression.substring(0, expression.length-1));
+       }
     }
 
     return (
@@ -119,10 +107,10 @@ function App() {
             <div className="nums-container">
                 <button className="light-grey big-h"
                     onClick={
-                        () => clear()
+                        () => allClear()
                     }
                     id="clear">AC</button>
-                <button className="grey">C</button>
+                <button className="grey" onClick={() => clear()}>C</button>
                 {
                     nums.map((num, idx) => (
                         <button className={
@@ -158,7 +146,12 @@ function App() {
                             }>
                             {op} </button>
                     ))
-                } </div>
+                } 
+            </div>
+            <div className="code">
+                Designed and Coded by C. W. Chan
+                2 July 2022
+            </div>
         </div>
 
     );
