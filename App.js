@@ -76,9 +76,13 @@ function App() {
 
     const calculate = () => {
         let ex = expression;
-        let res = eval(ex);
-        setAnswer(res);
-        setExpression(prev => prev + "=" + res)
+        if (!(/[/*\-+]/).test(expression.substring(expression.length-1, expression.length))) {
+            let res = eval(ex);
+            setAnswer(res);
+            setExpression(prev => prev + "=" + res)
+        } else {
+            return;
+        }
     };
 
     const allClear = () => {
@@ -149,7 +153,7 @@ function App() {
                 } 
             </div>
             <div className="code">
-                Designed and Coded by C. W. Chan
+                Designed and Coded by<br/> C. W. Chan<br/>
                 2 July 2022
             </div>
         </div>
