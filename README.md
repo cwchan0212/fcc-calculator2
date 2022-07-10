@@ -1,4 +1,4 @@
-<h1>Build a JavaScript Calculator</h1>
+<h1>[FreeCodeCamp] Build a JavaScript Calculator</h1>
 
 <p align="justify">Objective: Build an app that is functionally similar to this: https://codepen.io/freeCodeCamp/full/wgGVVX.</p>
 
